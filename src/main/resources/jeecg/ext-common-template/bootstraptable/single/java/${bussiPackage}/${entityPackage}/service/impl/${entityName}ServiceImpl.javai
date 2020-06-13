@@ -1,0 +1,137 @@
+package ${bussiPackage}.${entityPackage}.service.impl;
+import ${bussiPackage}.${entityPackage}.entity.${entityName}Entity;
+import ${bussiPackage}.${entityPackage}.service.${entityName}ServiceI;
+import ${bussiPackage}.${entityPackage}.dao.${entityName}Dao;
+import org.springframework.stereotype.Service;
+import com.sinosoft.sinoep.common.util.PageImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.*;
+
+import org.apache.commons.lang.StringUtils;
+import com.sinosoft.sinoep.user.util.UserUtil;
+import com.sinosoft.sinoep.common.constant.CommonConstants;
+import com.sinosoft.util.tool.JDateToolkit;
+<#-- update--begin--author:zhoujf date:20180413 for:TASK #2623 【bug】生成代码sql 不支持表达式-->
+<#-- update--end--author:zhoujf date:20180413 for:TASK #2623 【bug】生成代码sql 不支持表达式-->
+
+
+@Service
+public class ${entityName}ServiceImpl  implements ${entityName}ServiceI {
+  private Logger log = LoggerFactory.getLogger(this.getClass());
+	@Autowired
+	private ${entityName}Dao ${entityName?uncap_first}Dao;
+ 	
+ 	/**
+	 * 保存${ftl_description} 页面
+	 * @author 
+	 * @Date ${ftl_create_time}
+	 * @param entity
+	 * @return
+	 */
+    public ${entityName}Entity save(${entityName}Entity entity) throws IOException {
+        String id = entity.getId();
+        if (StringUtils.isBlank(id)) {
+            entity.setCreUserId(UserUtil.getCruUserId());
+            entity.setCreUserName(UserUtil.getCruUserName());
+            entity.setCreDeptId(UserUtil.getCruDeptId());
+            entity.setCreDeptName(UserUtil.getCruDeptName());
+            entity.setCreChushiId(UserUtil.getCruChushiId());
+            entity.setCreChushiName(UserUtil.getCruChushiName());
+            entity.setCreJuId(UserUtil.getCruJuId());
+            entity.setCreJuName(UserUtil.getCruJuName());
+            entity.setVisible(CommonConstants.VISIBLE[1]);
+            entity.setCreTime(JDateToolkit.getNowDate4());
+            entity = ${entityName?uncap_first}Dao.save(entity);
+            return entity;
+        } else {
+            ${entityName}Entity oldEntity = ${entityName?uncap_first}Dao.findOne(entity.getId());
+            <#list columns as po>
+        	 <#if po.isShowList?if_exists?html =='Y'>
+ 			oldEntity.set${po.fieldName?cap_first}(entity.get${po.fieldName?cap_first}());
+ 			</#if>
+ 			</#list>
+            oldEntity = ${entityName?uncap_first}Dao.save(oldEntity);
+ 			
+            return oldEntity;
+        }
+
+	}
+	
+	 /**
+     * 根据主键ID查询一条数据 
+     * @author 
+     * @Date ${ftl_create_time}
+     * @param id
+     * @return
+     */
+ 	@Override
+    public ${entityName}Entity getById(String id) throws Exception {
+        return ${entityName?uncap_first}Dao.findOne(id);
+    }
+    
+     /**
+     * 根据id逻辑删除${ftl_description} 对应列表
+     * @author 
+     * @Date ${ftl_create_time}
+     * @param entity
+     * @return
+     */
+ 	@Override
+    public int delete(${entityName}Entity entity) {
+        int n = 0;
+        if(StringUtils.isNotBlank(entity.getId())){
+            try {
+                //逻辑删除${ftl_description}
+                String deleteSql = "update ${entityName}Entity q set q.visible='"+CommonConstants.VISIBLE[0]+"' where q.id='"+entity.getId()+"'";
+                n = ${entityName?uncap_first}Dao.update(deleteSql);
+            } catch (Exception e) {
+                log.info(e.getMessage());
+                log.info("删除${ftl_description}出现异常！");
+                n=0;
+            }
+        }
+        return n;
+    }
+    
+     /**
+     * ${ftl_description}列表查询（带分页）
+     * @author 
+     * @Date ${ftl_create_time}
+     * @param pageable
+     * @param pageImpl
+     * @param entity
+     * @return
+     */
+    @Override
+    public PageImpl getPageList(Pageable pageable, PageImpl pageImpl, ${entityName}Entity entity) {
+        StringBuilder sql = new StringBuilder();
+        List<Object> para = new ArrayList<>();
+        sql.append(" from ${entityName}Entity t ");
+        sql.append(" where t.visible = '" + CommonConstants.VISIBLE[1] + "'");
+        
+        // 拼接排序语句
+        if (StringUtils.isBlank(pageImpl.getSortName())) {
+            sql.append(" order by t.creTime desc ");
+        } else {
+            sql.append(" order by t." + pageImpl.getSortName() + " " + pageImpl.getSortOrder() + ") ");
+        }
+
+        Page<${entityName}Entity> page = ${entityName?uncap_first}Dao.query(sql.toString(), pageable, para.toArray());
+        // 添加列表操作
+        List<${entityName}Entity> content = page.getContent();
+       		 for (${entityName}Entity ${entityName?uncap_first}Entity : content) {
+                ${entityName?uncap_first}Entity.setCz(CommonConstants.OPTION_UPDATE+","+CommonConstants.OPTION_DELETE);
+        }
+        return new PageImpl((int) page.getTotalElements(), page.getContent());
+    }
+    
+
+}

@@ -1,0 +1,248 @@
+<#include "/ui/datatype.ftl"/>
+<#include "/ui/dictInfo.ftl"/>
+<#include "/ui/tag.ftl"/>
+<%@ page language="java" import="java.util.*" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@include file="/context/mytags.jsp"%>
+<#assign uploadFlag=0>
+<#assign hasDate = 0>
+<#assign hasDateTime = 0>
+<#assign ue_widget_count = 0>
+<#list pageColumns as po>
+<#if uploadFlag==0 && (po.showType=='file' || po.showType == 'image')>
+<#assign uploadFlag=1>
+</#if>
+<#if hasDate==0 && po.showType=='date'>
+<#assign hasDate=1>
+</#if>
+<#if hasDateTime==0 && po.showType=='date'>
+<#assign hasDateTime=1>
+</#if>
+</#list>
+$(function () {
+    var theRequest = GetRequest();
+    $("#resId").val(theRequest.resId);
+    $("#id").val(regVlaue(theRequest.id));
+    $("#opertation").val(theRequest.oper);
+		<#if (pageColumns?size>10)>
+		<div class="row">
+		<#list pageColumns as po>
+		<div class="bt-item col-md-6 col-sm-6">
+			<div class="row">
+				<div class="col-md-3 col-sm-3 col-xs-3 bt-label">
+					${po.content}：
+				</div>
+				<div class="col-md-9 col-sm-9 col-xs-9 bt-content">
+					<#if po.showType=='textarea'>
+	            	<textarea name="${po.fieldName}" class="form-control input-sm" rows="6" <@datatype validType="${po.fieldValidType!''}" isNull="${po.isNull}" type="${po.type}" mustInput="${po.fieldMustInput!''}"/>></textarea>
+	            	<#elseif po.showType=='text'>
+					<input name="${po.fieldName}" type="text" class="form-control input-sm" maxlength="${po.length?c}" <@datatype validType="${po.fieldValidType!''}" isNull="${po.isNull}" type="${po.type}" mustInput="${po.fieldMustInput!''}" tableName="${po.table.tableName}" fieldName="${po.oldFieldName}"/> />
+	            	<#elseif po.showType=='password'>
+	            	<input name="${po.fieldName}" type="password" maxlength="${po.length?c}" class="form-control input-sm"<@datatype validType="${po.fieldValidType!''}" isNull="${po.isNull}" type="${po.type}" mustInput="${po.fieldMustInput!''}"/>/>
+	            	<#elseif po.showType=='radio'>
+	            	<div style="padding-top:5px">
+	            	<t:dictSelect field="${po.fieldName}" extendJson="{class:'i-checks'}" type="radio" hasLabel="false"  title="${po.content}" <@dictInfo dictTable="${po.dictTable}" dictField="${po.dictField}" dictText="${po.dictText}" />></t:dictSelect>
+	            	</div>
+	            	<#elseif po.showType=='select' || po.showType=='list'>
+	            	<t:dictSelect field="${po.fieldName}" type="select" hasLabel="false" title="${po.content}" extendJson="{class:'form-control input-sm'}" <@datatype inputCheck="2" validType="${po.fieldValidType!''}" isNull="${po.isNull}" type="${po.type}" mustInput="${po.fieldMustInput!''}" isNull="${po.isNull}"/> <@dictInfo dictTable="${po.dictTable}" dictField="${po.dictField}" dictText="${po.dictText}" />></t:dictSelect>
+	            	<#elseif po.showType=='checkbox'>
+	            	<div style="padding-top:5px">
+	            	<t:dictSelect field="${po.fieldName}" extendJson="{class:'i-checks'}" type="checkbox" hasLabel="false"  title="${po.content}" <@dictInfo dictTable="${po.dictTable}" dictField="${po.dictField}" dictText="${po.dictText}" />></t:dictSelect>
+	            	</div>
+	            	<#elseif po.showType=='date'>
+					<input name="${po.fieldName}" type="text" class="form-control input-sm laydate-date" <@datatype showType="2" validType="${po.fieldValidType!''}" isNull="${po.isNull}" type="${po.type}" mustInput="${po.fieldMustInput!''}" isNull="${po.isNull}"/> />
+					<#elseif po.showType=='datetime'>
+					<input name="${po.fieldName}" type="text" class="form-control input-sm laydate-datetime" <@datatype showType="2" validType="${po.fieldValidType!''}" isNull="${po.isNull}" type="${po.type}" mustInput="${po.fieldMustInput!''}" isNull="${po.isNull}"/> />
+	            	<#elseif po.showType=='file' || po.showType=='image'>
+	            	<@webuploadtag po = po defval=""/>
+	            	<#else>
+					<input name="${po.fieldName}" type="text" class="form-control input-sm" maxlength="${po.length?c}" <@datatype validType="${po.fieldValidType!''}" isNull="${po.isNull}" type="${po.type}" mustInput="${po.fieldMustInput!''}" tableName="${po.table.tableName}" fieldName="${po.oldFieldName}"/> />
+	            	</#if>
+				</div>
+			</div>
+		</div>
+		</#list>
+		<#-- update--begin--author:liushaoqian date:20180713 for:TASK #2964 【代码生成器--张伟健】单表代码生成器新老模板测试 -->
+		 <#list pageAreatextColumns as po>
+					<div class="bt-item col-md-6 col-sm-6">
+			        <div class="row">
+						<div class="col-md-3 col-sm-3 col-xs-3 bt-label">
+							${po.content}：
+						</div>
+				     <div class="col-md-9 col-sm-9 col-xs-9 bt-content">
+						    <#if po.showType=='textarea'>
+						  	 	<textarea name="${po.fieldName}" class="form-control input-sm" rows="6" <@datatype validType="${po.fieldValidType!''}" isNull="${po.isNull}" type="${po.type}" mustInput="${po.fieldMustInput!''}"/>></textarea>
+							<#elseif po.showType='umeditor'>
+								<#-- update--begin--author:zhangjiaqiang date:20170522 for:ueditor配置文件只加载一次 -->
+								<#assign ue_widget_count = ue_widget_count + 1>
+								<#if ue_widget_count == 1>
+								<script type="text/javascript"  charset="utf-8" src="plug-in/ueditor/ueditor.config.js"></script>
+								<script type="text/javascript"  charset="utf-8" src="plug-in/ueditor/ueditor.all.min.js"></script>
+								</#if>
+								<#-- update--end--author:zhangjiaqiang date:20170522 for:ueditor配置文件只加载一次 -->
+						    	<textarea name="${po.fieldName}" id="${po.fieldName}" style="width: 650px;height:300px"></textarea>
+							    <script type="text/javascript">
+							       <#-- update--begin--author:zhangjiaqiang date:20170522 for:editor编辑器变量唯一 -->
+							        var ${po.fieldName}_editor = UE.getEditor('${po.fieldName}');
+							        <#-- update--begin--author:zhangjiaqiang date:20170522 for:editor编辑器变量唯一 -->
+							    </script>
+							</#if>
+						<span class="Validform_checktip" style="float:left;height:0px;"></span>
+						<label class="Validform_label" style="display: none">${po.content?if_exists?html}</label>
+			          </div>
+						</div>
+			        </#list>
+			        <#-- update--end--author:liushaoqian date:20180713 for:TASK #2964 【代码生成器--张伟健】单表代码生成器新老模板测试 -->
+		</div>
+		<#else>
+		if($("#opertation").val() != "VIEW"){
+		<#list pageColumns as po>
+			<#if po.showType=='select' || po.showType=='list'>
+		        //初始化字典项--${po.content}
+		        Dictionary.init({position:"${po.fieldName}",mark:"${po.dictField}",type:"1",name:"${po.fieldName}",domType:"select"});
+			</#if>
+		</#list>
+		}
+		  /**
+     * 初始化页面，数据加载、渲染
+     */
+    if ($("#id").val() != "") {
+        var datas = {"id": $("#id").val(), "resId": $("#resId").val()};
+        //表单数据渲染
+        httpRequest("get", "/sysCsController/edit", datas, function (data) {  
+	        if($("#opertation").val() == "VIEW"){
+        	<#list pageColumns as po>
+			<#if po.showType=='select' || po.showType=='list'>
+		        data.data.${po.fieldName} =Dictionary.getNameAndCode({mark:"${po.dictField}",type:"1"})[data.data.${po.fieldName}];
+			</#if>
+		</#list>
+	        }
+	          DisplayData.playData({data: data});
+        });
+    }
+<#list pageColumns as po>
+<#if po.showType=='file' || po.showType=='image'>
+    iniFileUpload();
+</#if>
+</#list>
+});
+		<#-- update--begin--author:liushaoqian date:20180713 for:TASK #2964 【代码生成器--张伟健】单表代码生成器新老模板测试 -->
+		<#list pageAreatextColumns as po>
+					<div class="form-group">
+					<label for="${po.fieldName}" class="col-sm-3 control-label">${po.content}：</label>
+					<div class="col-sm-7">
+					<div class="input-group" style="width:100%">
+						    <#if po.showType=='textarea'>
+						  	 	<textarea id="${po.fieldName}" class="form-control" rows="6" style="width: 600px" name="${po.fieldName}" <@datatype validType="${po.fieldValidType!''}" isNull="${po.isNull}" type="${po.type}" mustInput="${po.fieldMustInput!''}"/>></textarea>
+							<#elseif po.showType='umeditor'>
+								<#-- update--begin--author:zhangjiaqiang date:20170522 for:ueditor配置文件只加载一次 -->
+								<#assign ue_widget_count = ue_widget_count + 1>
+								<#if ue_widget_count == 1>
+								<script type="text/javascript"  charset="utf-8" src="plug-in/ueditor/ueditor.config.js"></script>
+								<script type="text/javascript"  charset="utf-8" src="plug-in/ueditor/ueditor.all.min.js"></script>
+								</#if>
+								<#-- update--end--author:zhangjiaqiang date:20170522 for:ueditor配置文件只加载一次 -->
+						    	<textarea name="${po.fieldName}" id="${po.fieldName}" style="width: 650px;height:300px"></textarea>
+							    <script type="text/javascript">
+							       <#-- update--begin--author:zhangjiaqiang date:20170522 for:editor编辑器变量唯一 -->
+							        var ${po.fieldName}_editor = UE.getEditor('${po.fieldName}');
+							        <#-- update--begin--author:zhangjiaqiang date:20170522 for:editor编辑器变量唯一 -->
+							    </script>
+							</#if>
+						<span class="Validform_checktip" style="float:left;height:0px;"></span>
+						<label class="Validform_label" style="display: none">${po.content?if_exists?html}</label>
+			          </div>
+						</div>
+			        </#list>
+			        <#-- update--end--author:liushaoqian date:20180713 for:TASK #2964 【代码生成器--张伟健】单表代码生成器新老模板测试 -->
+		</#if>
+/**
+ * 提交表单
+ * 
+ */
+function commitForm() {
+    var data = saveForm();
+    if (data) {
+        layer.msg("保存成功！", {
+            icon : 1
+        });
+        // 刷新列表
+        parent.TableInit.refTable('right_table');
+
+    }
+}
+
+/**
+ * 保存
+ */
+function saveForm() {
+    var res = "";
+	var datas =$("#form").serialize();
+        $.ajax({
+            type: "POST",
+            url: "/sysCsController/save",
+            data: datas,
+            async: false,
+            success: function (json) {
+                if (json.flag == '1') {
+                    res = json.flag;
+                    $("#id").val(json.data.id);
+                    <#list pageColumns as po>
+					<#if po.showType=='file' || po.showType=='image'>
+                    //初始化文件上传(为保存后，将tableId放入上传参数中),并保存业务ID到附件表
+                	iniFileUpload();
+					MyFileUpload.saveDocIdToAffix({docId:json.data.id,fileListId: "files"});
+                	</#if>
+					</#list>
+                }
+            },
+            error: function () {
+            }
+        });
+    return res;
+}
+
+<#list pageColumns as po>
+<#if po.showType=='file' || po.showType=='image'>
+/**
+ * 初始化文件上传
+ */
+function iniFileUpload(){
+	var tableName ="";
+	var tableId="";
+	if(regVlaue($("#tableName").val())==""){
+		tableName="DDJS_SHYK_COLLECTIVE";
+		tableId=$("#id").val();
+	}else{
+		tableName =$("#tableName").val();
+		tableId=$("#tableId").val();
+	}
+	//初始化文件上传
+	MyFileUpload.init({
+		viewParams: {"tableId":tableId,"tableName":tableName},
+		editOrView:$("#opertation").val(),
+		maxFileSize:5*1024*1024 //5M
+	});
+
+
+}
+</#if>
+</#list>
+
+/**
+ * 空值设置
+ * @param val
+ * @returns
+ */
+function regVlaue(val) {
+    if (!val) {
+        val = "";
+    }
+    return val;
+}
+
+<#if (cgformConfig.formJs.cgJsStr)?? && cgformConfig.formJs.cgJsStr!="">
+<script type="text/javascript">
+//JS增强
+${cgformConfig.formJs.cgJsStr}
+</script>
+</#if>

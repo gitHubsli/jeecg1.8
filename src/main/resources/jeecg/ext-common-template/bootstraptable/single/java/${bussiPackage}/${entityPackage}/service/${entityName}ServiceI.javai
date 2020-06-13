@@ -1,0 +1,65 @@
+package ${bussiPackage}.${entityPackage}.service;
+import ${bussiPackage}.${entityPackage}.entity.${entityName}Entity;
+import com.sinosoft.sinoep.common.util.PageImpl;
+import org.springframework.data.domain.Pageable;
+
+import java.io.IOException;
+
+
+public interface ${entityName}ServiceI {
+	
+ <#--	public void delete(${entityName}Entity entity) throws Exception;-->
+ 	
+ <#--	public Serializable save(${entityName}Entity entity) throws Exception;-->
+ 	
+ 	/**
+	 * 保存${ftl_description}页面
+	 * @author 
+	 * @Date ${ftl_create_time}
+	 * @param entity
+	 * @return
+	 */
+ 	public ${entityName}Entity save(${entityName}Entity entity) throws IOException; 
+ 	
+ 	 /**
+     * 根据主键ID查询一条数据 
+     * @author 
+     * @Date ${ftl_create_time}
+     * @param id
+     * @return
+     */
+ 	public ${entityName}Entity getById(String id) throws Exception;
+ 	
+ 	 /**
+     * 根据id逻辑删除${ftl_description} 对应列表
+     * @author 
+     * @Date ${ftl_create_time}
+     * @param entity
+     * @return
+     */
+ 	public int delete(${entityName}Entity entity);
+ 	
+ 	 /**
+     * ${ftl_description}列表查询（带分页）
+     * @author 
+     * @Date ${ftl_create_time}
+     * @param pageable
+     * @param pageImpl
+     * @param entity
+     * @return
+     */
+ 	public PageImpl getPageList(Pageable pageable, PageImpl pageImpl, ${entityName}Entity entity);
+ 	
+  <#--	public void saveOrUpdate(${entityName}Entity entity) throws Exception;
+ 	
+	<#list buttons as btn>
+ 	<#if btn.optType=='action'>
+ 	/**
+	 * 自定义按钮-[${btn.buttonName}]业务处理
+	 * @param id
+	 * @return
+	 */
+	 public void do${btn.buttonCode?cap_first}Bus(${entityName}Entity t) throws Exception;
+ 	</#if>
+ 	</#list> -->
+}

@@ -1,0 +1,16 @@
+package ${bussiPackage}.${entityPackage}.dao;
+import ${bussiPackage}.${entityPackage}.entity.${entityName}Entity;
+import com.sinosoft.sinoep.common.jpa.repository.BaseRepository;
+
+
+/**   
+ * @Title: Dao  
+ * @Description: ${ftl_description}
+ * @author 
+ * @date ${ftl_create_time}
+ * @version V1.0   
+ *
+ */
+public interface ${entityName}Dao extends BaseRepository<${entityName}Entity, String> {
+
+}

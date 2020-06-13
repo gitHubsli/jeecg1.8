@@ -1,0 +1,335 @@
+<%@ page language="java" import="java.util.*" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@include file="/context/mytags.jsp"%>
+<style type="text/css">
+    .panel-controls {
+        position: absolute;
+        right: 40px;
+        top: 10px;
+    }
+
+    .panel-controls > i.showSelect {
+        font-size: 16px;
+        color: #acb1b8;
+        cursor: pointer;
+    }
+
+    label {
+        font-weight: normal;
+    }
+</style>
+<link rel="stylesheet" type="text/css" href="/static/css/common/Loading.css">
+	<#-- update--begin--author:jiaqiankun date:20180629 for:TASK #2863 【代码生成器】一套新的模板，bootstapTable原生列表 + boostrap表单 -->
+	<#assign hasQuery=false>
+	<#list columns as po>
+	<#if po.isQuery =='Y'>
+		<#assign hasQuery=true>
+		<#break>
+	</#if>
+	</#list>
+	<#-- update--end--author:jiaqiankun date:20180629 for:TASK #2863 【代码生成器】一套新的模板，bootstapTable原生列表 + boostrap表单 -->
+	<#if hasQuery==true>
+	<div class="panel-body" style="padding-bottom: 0px;">
+		<!-- 搜索 -->
+		<div class="accordion-group">
+			<div id="collapse_search" class="accordion-body collapse">
+				<div class="accordion-inner">
+					<div class="panel panel-default" style="margin-bottom: 0px;">
+						<div class="panel-body">
+							<form id="${entityName?uncap_first}Form" onkeydown="if(event.keyCode==13){doSearch();return false;}">
+								<#list columns as po>
+									<#if po.isQuery =='Y'>
+										<#if po.showType?index_of("datetime")!=-1>
+											<#if po.queryMode =='group'>
+											<div class="col-xs-12 col-sm-6 col-md-4">
+												<label for="${po.fieldName}_begin">${po.content}：</label>
+												<div class="input-group" style="width: 100%">
+													<input type="text" class="form-control input-sm  laydate-datetime" id="${po.fieldName}_begin" name="${po.fieldName}_begin"/>
+													<span class="input-group-addon" >
+								                        <span class="glyphicon glyphicon-calendar"></span>
+								                    </span>
+													<span class="input-group-addon input-sm">~</span>
+													<input type="text" class="form-control input-sm  laydate-datetime" id="${po.fieldName}_end" name="${po.fieldName}_end"/>
+													<span class="input-group-addon" >
+								                        <span class="glyphicon glyphicon-calendar"></span>
+								                    </span>
+												</div>
+											</div>
+											<#else>
+											<div class="col-xs-12 col-sm-6 col-md-4">
+												<label for="${po.fieldName}">${po.content}：</label>
+												<div class="input-group" style="width: 100%">
+													<input type="text" class="form-control input-sm  laydate-datetime" id="${po.fieldName}" name="${po.fieldName}"/>
+													<span class="input-group-addon" >
+								                        <span class="glyphicon glyphicon-calendar"></span>
+								                    </span>
+												</div>
+											</div>
+											</#if>
+										<#elseif po.showType?index_of("date")!=-1>
+											<#if po.queryMode =='group'>
+											<div class="col-xs-12 col-sm-6 col-md-4">
+												<label for="${po.fieldName}_begin">${po.content}：</label>
+												<div class="input-group" style="width: 100%">
+													<input type="text" class="form-control input-sm laydate-date" id="${po.fieldName}_begin" name="${po.fieldName}_begin"/>
+													<span class="input-group-addon" >
+								                        <span class="glyphicon glyphicon-calendar"></span>
+								                    </span>
+													 <span class="input-group-addon input-sm">~</span> 
+													 <input type="text" class="form-control input-sm laydate-date" id="${po.fieldName}_end" name="${po.fieldName}_end"/>
+													 <span class="input-group-addon" >
+								                        <span class="glyphicon glyphicon-calendar"></span>
+								                    </span>
+												</div>
+											</div>
+											<#else>
+											<div class="col-xs-12 col-sm-6 col-md-4">
+												<label for="${po.fieldName}">${po.content}：</label>
+												<div class="input-group" style="width: 100%">
+													<input type="text" class="form-control input-sm laydate-date" id="${po.fieldName}" name="${po.fieldName}"/>
+													<span class="input-group-addon" >
+							                        	<span class="glyphicon glyphicon-calendar"></span>
+								                    </span>
+												</div>
+											</div>
+											</#if>
+										<#elseif po.showType=='checkbox'|| po.showType=='radio'>
+											<div class="col-xs-12 col-sm-6 col-md-4">
+												<label for="${po.fieldName}">${po.content}：</label>
+												<div class=" ${po.fieldName}-search input-group" style="width: 100%"></div>
+											</div>
+										<#elseif  po.showType=='select' || po.showType=='list'>
+											<div class="col-xs-12 col-sm-6 col-md-4">
+									    		<label for="${po.fieldName}">${po.content}：</label>
+									    		<div class="input-group" style="width:100%">
+										    		<select class="form-control input-sm" id="${po.fieldName}" name="${po.fieldName}"></select>
+									    		</div>
+								    		</div>
+										<#else>
+											<#if po.queryMode =='group'>
+											<div class="col-xs-12 col-sm-6 col-md-4">
+												<label for="${po.fieldName}_begin">${po.content}：</label>
+												<div class="input-group" style="width: 100%">
+													<input type="text" class="form-control input-sm" id="${po.fieldName}_begin" name="${po.fieldName}_begin"/> 
+													<span class="input-group-addon input-sm">~</span> 
+													<input type="text" class="form-control input-sm" id="${po.fieldName}_end" name="${po.fieldName}_end"/>
+												</div>
+											</div>
+											<#else>
+											<div class="col-xs-12 col-sm-6 col-md-4">
+												<label for="${po.fieldName}">${po.content}：</label>
+												<div class="input-group" style="width: 100%">
+													<input type="text" class="form-control input-sm" id="${po.fieldName}" name="${po.fieldName}"/>
+												</div>
+											</div>
+											</#if>
+										</#if>
+									</#if>
+								</#list>
+								
+								<div class="col-xs-12 col-sm-6 col-md-4">
+									<div class="input-group col-md-12" style="margin-top: 20px">
+										<a type="button" onclick="searchList();" class="btn btn-primary btn-rounded  btn-bordered btn-sm"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>查询</a> 
+										<a type="button" onclick="searchRest();" class="btn btn-primary btn-rounded  btn-bordered btn-sm"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>重置</a>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</#if>
+	
+<div class="container-fluid">
+    <div class="row">
+        <!--查询-->
+        <form class="form-horizontal">
+            <div class="col-md-12">
+                <div class="panel panel-default toggle">
+                    <div class="panel-heading" style="cursor: pointer;">
+                        <h3 class="panel-title">查询项</h3>
+                        <div class="panel-controls ">
+                            <i class="glyphicon glyphicon-plus showSelect"></i>
+                        </div>
+                    </div>
+                    <div class="panel-body" style="display: none;">
+                        <!--查询项输入框选择框等开始-->
+                        <!--查询项输入框选择框等结束-->
+
+                        <!--查询重置等按钮-->
+                        <div class="form-group">
+                            <div class="col-md-12" style="text-align: center">
+                                <button type="button" class="btn btn-primary"
+                                        onclick="TableInit.refTable('right_table')"> 查&nbsp;&nbsp;询
+                                </button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <button type="reset" class="btn btn-primary"> 重&nbsp;&nbsp;置
+                                </button>
+                            </div>
+                        </div>
+                        <!--查询重置等按钮 end-->
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!--查询结束-->
+        <!--查询结束-->
+        <div class="col-md-12">
+            <div class="list_button_area">
+                <button class="list_table_btn2" onclick="list.addFun('1')">
+                    <span class="glyphicon glyphicon-plus-sign"></span> 新增
+                </button>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <!--bootstrap-table表格-->
+            <table id="right_table"></table>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="/static/js/common/assistUtil.js"></script>
+<script type="text/javascript">
+<#list pageColumns as po>
+<#if po.showType=='select' || po.showType=='list'>
+    //初始化字典项--${po.content}
+    var ${po.fieldName}Map = Dictionary.getNameAndCode({mark:"${po.dictField}",type:"1"});
+</#if>
+</#list>
+
+    //定义bootatrap-table数据列
+    //    sortable：开启列排序，其他参考API
+    var right_table_col = [{
+         title: '序号'
+        , width: '5%'
+        , order: "desc"
+        , align: "center"
+        , formatter: function (value, row, index) {
+            //计算序号，并存放业务ID，及已办事项ID
+            var pageSize = $('#right_table').bootstrapTable('getOptions').pageSize;//通过表的#id 可以得到每页多少条
+            var pageNumber = $('#right_table').bootstrapTable('getOptions').pageNumber;//通过表的#id 可以得到当前第几页
+            var orderNum = pageSize * (pageNumber - 1) + index + 1;//计算序号
+            return "<span data-id='" + row.id + "' data-borrowId='" + row.borrowId + "'>" + orderNum + "</span>";
+        }
+    },
+  <#list columns as po>
+	{
+		field : '${po.fieldName}',
+		title : '${po.content}',
+	<#--	valign : 'middle',-->
+	<#--	width : ${po.fieldLength},-->
+		width : '5%',
+		<#if po.isShowList?if_exists?html =='N'||po.showType=='image' ||po.showType=='file'>
+		visible:false,
+		</#if>
+		align : 'center',
+		<#if po.showType=='select' || po.showType=='list'>
+		formatter:function (value,row,index) {
+        	return ${po.fieldName}Map[value];
+        }
+		</#if>
+	<#--	switchable : true,-->
+		<#if po.showType?index_of("datetime")!=-1>
+	<#--	formatter : function(value, rec, index) {
+			return new Date().format('yyyy-MM-dd hh:mm:ss', value);
+		}-->
+		<#elseif po.showType?index_of("date")!=-1>
+	<#--	formatter : function(value, rec, index) {
+			return new Date().format('yyyy-MM-dd', value);
+		}-->
+		<#elseif po.showType=='checkbox' || po.showType=='radio' || po.showType=='select' || po.showType=='list'>
+	<#--	formatter : function(value, rec, index) {
+			return listDictFormat(value,${entityName?uncap_first}ListdictsData.${po.dictField});
+		}-->
+		<#elseif po.showType=='image' ||po.showType=='file'>
+	<#--	formatter:function(value,rec,index){
+			return listFileImgFormat(value,"${po.showType}");
+	 	}-->
+		</#if>
+	},
+	</#list>
+    {
+        field: 'cz'
+        , title: '操作'
+        , width: '10%'
+        , align:"center"
+        , formatter: function (value, row, index) {  //直接定义function,return就是html代码
+            var opt = value.split(",");
+            var html = "";
+            for (var i = 0; i < opt.length; i++) {
+    			if (opt[i] == "update") {
+                    html +="<i title='更新' class='glyphicon glyphicon-edit' onclick=\'list.editFun(\"" + row.id + "\")\'></i>&nbsp;&nbsp;"
+                } else if (opt[i] == "delete") {
+                    html += "<i title='删除' class='glyphicon glyphicon-trash' onclick=\'list.deleteFun(\"" + row.id + "\")\'></i>"
+                }
+            }
+            return html;
+        }
+    }];
+    
+        $(document).ready(function (e) {
+        //初始化表格
+        TableInit.init({
+            domId:"right_table",
+            url:"/${entityName?uncap_first}Controller/list",
+            columns:right_table_col,
+            queryParams:function(params){
+                //这里将各个查询项添加到要传递的参数中
+				//可以做一些校验
+                return params;
+            },
+            readOnlyFn:function(){
+                $('tr.readOnly').find('td:not(:last)').unbind('click').bind('click',function(e){
+				//取消事件冒泡
+                    var evt = e ? e : window.event;
+                    if (evt.stopPropagation) {
+                        evt.stopPropagation();
+                    }else {
+                        evt.cancelBubble = true;
+                    }
+				  //取消事件冒泡 end
+                    var id = $(this).parent().find("span[data-id]").attr("data-id");
+                    var resId = $('#left_ul').find('a.active').attr("id");
+                    MyLayer.layerOpenUrl({
+                        url: '/modules/dwgl/${entityName?uncap_first}/${entityName?uncap_first}OnlyEditForm.html?id=' + id + "&oper=VIEW&resId=" + resId,
+                        title: "${ftl_description}详情"
+                    });
+                });
+            }
+        });
+    });
+    
+  
+     //    表格数据项的操作
+    var list = {
+        addFun:function(type) {
+            MyLayer.layerOpenUrl({
+                url: '/modules/dwgl/${entityName?uncap_first}/${entityName?uncap_first}EditForm.html',
+                title: "${ftl_description}新增"
+            })
+        },
+        editFun:function(id){
+            MyLayer.layerOpenUrl({
+                url:'/modules/dwgl/${entityName?uncap_first}/${entityName?uncap_first}EditForm.html?id='+id,
+                title:"${ftl_description}修改"
+            })
+        },
+        deleteFun:function(id){
+            MyLayer.deleteOpt({
+                url:'/${entityName?uncap_first}Controller/delete?id=' + id,
+                tableId:'right_table'
+            })
+        }
+    }
+    
+    
+      //清空查询条件
+    function clearAll() {
+      
+    }
+</script>
+	<#if (cgformConfig.listJs.cgJsStr)?? && cgformConfig.listJs.cgJsStr!="">
+	<script type="text/javascript">
+ 	 //JS增强
+	 ${cgformConfig.listJs.cgJsStr?if_exists}
+	</script>
+	</#if>

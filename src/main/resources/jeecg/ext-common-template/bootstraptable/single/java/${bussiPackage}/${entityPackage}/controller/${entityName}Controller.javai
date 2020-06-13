@@ -1,0 +1,188 @@
+package ${bussiPackage}.${entityPackage}.controller;
+import ${bussiPackage}.${entityPackage}.entity.${entityName}Entity;
+import ${bussiPackage}.${entityPackage}.service.${entityName}ServiceI;
+
+<#-- tjxm-->
+import com.sinosoft.sinoep.handlerInterceptor.LogAnnotation;
+import net.sf.json.JSONObject;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import com.sinosoft.sinoep.common.util.PageImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+<#if cgformConfig.supportRestful?? && cgformConfig.supportRestful == "1">
+<#-- restful 通用方法生成 -->
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.jeecgframework.core.beanvalidator.BeanValidators;
+import java.util.Set;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
+import java.net.URI;
+import org.springframework.http.MediaType;
+import org.springframework.web.util.UriComponentsBuilder;
+import org.apache.commons.lang3.StringUtils;
+import org.jeecgframework.jwt.util.ResponseMessage;
+import org.jeecgframework.jwt.util.Result;
+import com.alibaba.fastjson.JSONArray;
+<#-- restful 通用方法生成 -->
+
+<#-- swagger api  start -->
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+<#-- swagger api end -->
+</#if>
+<#-- 列为文件类型的文件代码生成 -->
+<#assign fileFlag = false />
+<#list columns as filePo>
+<#-- update--begin--author:gj_shaojc date:20180302 for：TASK #2551 【bug】网友问题验证确认 -->
+	<#if filePo.showType=='file'  || filePo.showType == 'image'>
+<#-- update--end--author:gj_shaojc date:20180302 for：TASK #2551 【bug】网友问题验证确认 -->
+		<#assign fileFlag = true />
+	</#if>
+</#list>
+
+<#--<#if fileFlag==true>
+import org.jeecgframework.web.cgform.entity.upload.CgUploadEntity;
+import org.jeecgframework.web.cgform.service.config.CgFormFieldServiceI;
+import java.util.HashMap;
+</#if>-->
+<#-- 列为文件类型的文件代码生成 -->
+/**   
+ * @Title: Controller  
+ * @Description: ${ftl_description}
+ * @author 
+ * @date ${ftl_create_time}
+ * @version V1.0   
+ *
+ */
+<#if cgformConfig.supportRestful?? && cgformConfig.supportRestful == "1">
+ <#-- update--begin--author:zhangjiaqiang date:20171031 for:API 注解 start -->
+@Api(value="${entityName}",description="${ftl_description}",tags="${entityName?uncap_first}Controller")
+<#-- update--end--author:zhangjiaqiang date:20171031 for:API 注解 start -->
+</#if>
+@Controller
+@RequestMapping("/${entityName?uncap_first}Controller")
+public class ${entityName}Controller  {
+    private Logger log = LoggerFactory.getLogger(this.getClass());
+
+	@Autowired
+	private ${entityName}ServiceI ${entityName?uncap_first}Service;
+
+	<#-- restful 通用方法生成 -->
+	<#if cgformConfig.supportRestful?? && cgformConfig.supportRestful == "1">
+	@Autowired
+	private Validator validator;
+	</#if>
+	<#-- restful 通用方法生成 -->
+	
+	<#-- 列为文件类型的文件代码生成 -->
+<#--	<#if fileFlag==true>
+	@Autowired
+	private CgFormFieldServiceI cgFormFieldService;
+	</#if>-->
+	<#-- 列为文件类型的文件代码生成 -->
+	
+	/**
+	 * 保存${ftl_description} 页面
+	 * @author 
+	 * @Date ${ftl_create_time}
+	 * @param ${entityName?uncap_first}
+	 * @return
+	 */
+	@LogAnnotation(value = "save",opName = "保存${ftl_description}页面")
+    @RequestMapping("save")
+    @ResponseBody
+	public JSONObject save( ${entityName}Entity ${entityName?uncap_first}) {
+		 JSONObject json = new JSONObject();
+        try {
+            ${entityName?uncap_first} =  ${entityName?uncap_first}Service.save(${entityName?uncap_first});
+            json.put("flag", 1);
+            json.put("data", ${entityName?uncap_first});
+        } catch (Exception e) {
+            //   log.error(e.getMessage(),e);
+            json.put("flag", 0);
+        }
+        return json;
+	}
+
+	
+	 /**
+	 * 打开只读、修改页面时，查询数据进行渲染
+	 * @author 
+	 * @Date ${ftl_create_time}
+	 * @param
+	 * @param id
+	 * @return
+	 */
+    @LogAnnotation(value = "edit",opName = "修改${ftl_description}页面")
+    @ResponseBody
+    @RequestMapping("edit")
+    public JSONObject edit( String id){
+        JSONObject json = new JSONObject();
+        json.put("flag", "0");
+        ${entityName}Entity entity = null;
+        try {
+            entity = ${entityName?uncap_first}Service.getById(id);
+            json.put("flag", "1");
+            json.put("data", entity);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage(),e);
+        }
+        return json;
+    }
+
+      /**
+     * 根据id逻辑删除${ftl_description} 对应列表
+     * @author 
+     * @Date ${ftl_create_time}
+     * @param ${entityName?uncap_first}
+     * @return
+     */
+    @LogAnnotation(value = "delete",opName = "根据id删除${ftl_description}对应列表")
+    @ResponseBody
+    @RequestMapping("delete")
+    public JSONObject delete(${entityName}Entity ${entityName?uncap_first}) {
+        JSONObject json = new JSONObject();
+        try {
+            int n = ${entityName?uncap_first}Service.delete(${entityName?uncap_first});
+            json.put("flag", "1");
+        } catch (Exception e) {
+            e.printStackTrace();
+            json.put("flag", "0");
+        }
+        return json;
+    }
+    
+     /**
+     * ${ftl_description}  列表查询的方法
+     * @author 
+     * @Date ${ftl_create_time}
+     * @param ${entityName?uncap_first}
+     * @param pageImpl
+     * @return
+     */
+    @LogAnnotation(value = "query",opName = "查询${ftl_description}列表")
+    @ResponseBody
+    @RequestMapping("list")
+    public PageImpl list(PageImpl pageImpl, ${entityName}Entity ${entityName?uncap_first}) {
+         Pageable pageable = new PageRequest(pageImpl.getPageNumber() - 1, pageImpl.getPageSize());
+        PageImpl pageList = ${entityName?uncap_first}Service.getPageList(pageable, pageImpl, ${entityName?uncap_first});
+
+        return pageList;
+    }
+    
+
+	
+}
